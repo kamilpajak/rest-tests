@@ -17,8 +17,23 @@ public class CrudSteps {
         return crudService.getAllClients();
     }
 
+    @Step("Get client: '{0}'.")
+    public Response getClient(String clientId) {
+        return crudService.getClient(clientId);
+    }
+
     @Step("Add new client.")
     public Response addNewClient(ClientRequest clientRequest) {
         return crudService.addNewClient(clientRequest);
+    }
+
+    @Step("Update client: '{0}'.")
+    public Response updateClient(String clientId, ClientRequest clientRequest) {
+        return crudService.updateClient(clientId, clientRequest);
+    }
+
+    @Step("Delete client: '{0}'.")
+    public Response deleteClient(String clientId) {
+        return crudService.deleteClient(clientId);
     }
 }

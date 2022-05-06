@@ -42,10 +42,30 @@ public class CrudService {
                 .andReturn();
     }
 
+    public Response getClient(String clientId) {
+        return baseSpecification()
+                .get("/client/{clientId}", clientId)
+                .andReturn();
+    }
+
     public Response addNewClient(ClientRequest clientRequest) {
         return baseSpecification()
                 .body(clientRequest)
                 .post("/client")
                 .andReturn();
     }
+
+    public Response updateClient(String clientId, ClientRequest clientRequest) {
+        return baseSpecification()
+                .body(clientRequest)
+                .put("/client/{clientId}", clientId)
+                .andReturn();
+    }
+
+    public Response deleteClient(String clientId) {
+        return baseSpecification()
+                .get("/client/{clientId}", clientId)
+                .andReturn();
+    }
+
 }
