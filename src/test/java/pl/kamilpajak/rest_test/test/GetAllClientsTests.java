@@ -34,6 +34,7 @@ class GetAllClientsTests extends BaseTest {
         assertThat(getAllClientsResponse.statusCode())
                 .isEqualTo(HttpStatus.SC_OK);
         var returnedClients = getAllClientsResponse.jsonPath().getList("clients", ClientDetails.class);
-        assertThat(returnedClients).contains(addNewClientResponse.as(ClientDetails.class));
+        assertThat(returnedClients)
+                .contains(addNewClientResponse.as(ClientDetails.class));
     }
 }

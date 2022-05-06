@@ -55,6 +55,5 @@ class GetClientTests extends BaseTest {
                 .isEqualTo(HttpStatus.SC_NOT_FOUND);
         assertThat(returnedClientResponse.as(Message.class).getMessage())
                 .isEqualTo("client not found");
-
     }
 }
