@@ -83,16 +83,16 @@ class UpdateClientTests extends BaseTest {
             SoftAssertions softly
     ) {
         // Given
-        var addNewClientResponse = crudSteps.addNewClient(
+        var addClientResponse = crudSteps.addClient(
                 ClientRequest.builder()
                         .firstName(randomAlphabetic(7))
                         .lastName(randomAlphabetic(7))
                         .phone(randomAlphabetic(7))
                         .build()
         );
-        assumeThat(addNewClientResponse.statusCode())
+        assumeThat(addClientResponse.statusCode())
                 .isEqualTo(HttpStatus.SC_OK);
-        var initialClient = addNewClientResponse.as(ClientDetails.class);
+        var initialClient = addClientResponse.as(ClientDetails.class);
 
         // When
         var response = crudSteps.updateClient(initialClient.getId(), updateClientRequest);
@@ -116,16 +116,16 @@ class UpdateClientTests extends BaseTest {
             SoftAssertions softly
     ) {
         // Given
-        var addNewClientResponse = crudSteps.addNewClient(
+        var addClientResponse = crudSteps.addClient(
                 ClientRequest.builder()
                         .firstName(randomAlphabetic(7))
                         .lastName(randomAlphabetic(7))
                         .phone(randomAlphabetic(7))
                         .build()
         );
-        assumeThat(addNewClientResponse.statusCode())
+        assumeThat(addClientResponse.statusCode())
                 .isEqualTo(HttpStatus.SC_OK);
-        var initialClient = addNewClientResponse.as(ClientDetails.class);
+        var initialClient = addClientResponse.as(ClientDetails.class);
 
         // When
         var response = crudSteps.updateClient(initialClient.getId(), updateClientRequest);
@@ -160,5 +160,37 @@ class UpdateClientTests extends BaseTest {
                 .isEqualTo("client not found");
         softly.assertThat(getClientResponse.statusCode())
                 .isEqualTo(HttpStatus.SC_NOT_FOUND);
+    }
+
+    @Test
+    @DisplayName("Verify FORBIDDEN status is returned.")
+    void verifyForbiddenStatusIsReturned() {
+        // Given
+        var clientRequest = ClientRequest.builder()
+                .firstName(randomAlphabetic(7))
+                .lastName(randomAlphabetic(7))
+                .phone(randomAlphabetic(7))
+                .build();
+        var addClientResponse = crudSteps.addClient(clientRequest);
+        assumeThat(addClientResponse.statusCode())
+                .isEqualTo(HttpStatus.SC_OK);
+        var initialClient = addClientResponse.as(ClientDetails.class);
+        var updateClientRequest = ClientRequest.builder()
+                .firstName(randomAlphabetic(7))
+                .lastName(randomAlphabetic(7))
+                .phone(randomAlphabetic(7))
+                .build();
+
+        // When
+        var updateClientResponse = crudSteps.updateClientUnauthorized(initialClient.getId(), updateClientRequest);
+        var getClientResponse = crudSteps.getClient(initialClient.getId());
+
+        // Then
+        assertThat(updateClientResponse.statusCode())
+                .isEqualTo(HttpStatus.SC_FORBIDDEN);
+        assertThat(updateClientResponse.as(Message.class).getMessage())
+                .isEqualTo("invalid or missing api key");
+        assertThat(getClientResponse.as(ClientDetails.class))
+                .isEqualTo(initialClient);
     }
 }

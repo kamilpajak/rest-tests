@@ -17,14 +17,29 @@ public class CrudSteps {
         return crudService.getAllClients();
     }
 
+    @Step("Get all clients [Unauthorized].")
+    public Response getAllClientsUnauthorized() {
+        return crudService.getAllClientsUnauthorized();
+    }
+
     @Step("Get client: '{0}'.")
     public Response getClient(String clientId) {
         return crudService.getClient(clientId);
     }
 
+    @Step("Get client: '{0}' [Unauthorized].")
+    public Response getClientUnauthorized(String clientId) {
+        return crudService.getClientUnauthorized(clientId);
+    }
+
     @Step("Add new client.")
-    public Response addNewClient(ClientRequest clientRequest) {
-        return crudService.addNewClient(clientRequest);
+    public Response addClient(ClientRequest clientRequest) {
+        return crudService.addClient(clientRequest);
+    }
+
+    @Step("Add client [Unauthorized].")
+    public Response addClientUnauthorized(ClientRequest clientRequest) {
+        return crudService.addClientUnauthorized(clientRequest);
     }
 
     @Step("Update client: '{0}'.")
@@ -32,8 +47,18 @@ public class CrudSteps {
         return crudService.updateClient(clientId, clientRequest);
     }
 
+    @Step("Update client: '{0}' [Unauthorized].")
+    public Response updateClientUnauthorized(String clientId, ClientRequest clientRequest) {
+        return crudService.updateClientUnauthorized(clientId, clientRequest);
+    }
+
     @Step("Delete client: '{0}'.")
     public Response deleteClient(String clientId) {
         return crudService.deleteClient(clientId);
+    }
+
+    @Step("Delete client: '{0}' [Unauthorized].")
+    public Response deleteClientUnauthorized(String clientId) {
+        return crudService.deleteClientUnauthorized(clientId);
     }
 }

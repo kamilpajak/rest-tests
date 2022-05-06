@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assumptions.assumeThat;
 
 @SpringBootTest
-class AddNewClientTests extends BaseTest {
+class AddClientTests extends BaseTest {
 
     private static Stream<Arguments> validCustomerRequests() {
         return Stream.of(
@@ -78,18 +78,18 @@ class AddNewClientTests extends BaseTest {
 
     @ParameterizedTest(name = "Verify new client is correctly created - {1}.")
     @MethodSource("validCustomerRequests")
-    void verifyNewClientIsCorrectlyCreated(
+    void verifyClientIsCorrectlyCreated(
             ClientRequest clientRequest,
             String description,
             SoftAssertions softly
     ) {
         // When
-        var addNewClientResponse = crudSteps.addNewClient(clientRequest);
-        assertThat(addNewClientResponse.statusCode())
+        var addClientResponse = crudSteps.addClient(clientRequest);
+        assertThat(addClientResponse.statusCode())
                 .isEqualTo(HttpStatus.SC_OK);
 
         // Then
-        var returnedClient = addNewClientResponse.as(ClientDetails.class);
+        var returnedClient = addClientResponse.as(ClientDetails.class);
         softly.assertThat(returnedClient.getId()).isNotBlank();
         softly.assertThat(returnedClient)
                 .usingRecursiveComparison()
@@ -99,16 +99,34 @@ class AddNewClientTests extends BaseTest {
 
     @ParameterizedTest(name = "Verify new client is NOT created - {1}.")
     @MethodSource("invalidCustomerRequests")
-    void verifyNewClientIsNotCreated(
+    void verifyClientIsNotCreated(
             ClientRequest clientRequest,
             String description
     ) {
         // When
-        var addNewClientResponse = crudSteps.addNewClient(clientRequest);
+        var addClientResponse = crudSteps.addClient(clientRequest);
 
         // Then
-        assertThat(addNewClientResponse.statusCode())
+        assertThat(addClientResponse.statusCode())
                 .isEqualTo(HttpStatus.SC_BAD_REQUEST);
+    }
+
+    @Test
+    @DisplayName("Verify FORBIDDEN status is returned.")
+    void verifyForbiddenStatusIsReturned() {
+        // Given
+        var clientRequest = ClientRequest.builder()
+                .firstName(randomAlphabetic(7))
+                .lastName(randomAlphabetic(7))
+                .phone(randomAlphabetic(7))
+                .build();
+
+        // When
+        var addClientResponse = crudSteps.addClientUnauthorized(clientRequest);
+
+        // Then
+        assertThat(addClientResponse.statusCode())
+                .isEqualTo(HttpStatus.SC_FORBIDDEN);
     }
 
     @Disabled("It is possible to create two customers with same details.")
@@ -121,14 +139,14 @@ class AddNewClientTests extends BaseTest {
                 .lastName(randomAlphabetic(7))
                 .phone(randomAlphabetic(7))
                 .build();
-        var firstAddNewClientResponse = crudSteps.addNewClient(clientRequest);
-        assumeThat(firstAddNewClientResponse.statusCode())
+        var firstAddClientResponse = crudSteps.addClient(clientRequest);
+        assumeThat(firstAddClientResponse.statusCode())
                 .isEqualTo(HttpStatus.SC_OK);
         // When
-        var secondAddNewClientResponse = crudSteps.addNewClient(clientRequest);
+        var secondAddClientResponse = crudSteps.addClient(clientRequest);
 
         // Then
-        assertThat(secondAddNewClientResponse.statusCode())
+        assertThat(secondAddClientResponse.statusCode())
                 .isEqualTo(HttpStatus.SC_CONFLICT);
     }
 }

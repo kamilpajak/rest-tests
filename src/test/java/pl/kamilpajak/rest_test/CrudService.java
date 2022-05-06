@@ -32,12 +32,18 @@ public class CrudService {
                         new AllureRestAssured(),
                         new RequestLoggingFilter(),
                         new ResponseLoggingFilter())
-                .header("X-API-KEY", accessToken)
                 .baseUri("https://qa-interview-api.migo.money")
                 .contentType(ContentType.JSON);
     }
 
     public Response getAllClients() {
+        return baseSpecification()
+                .header("X-API-KEY", accessToken)
+                .get("/clients")
+                .andReturn();
+    }
+
+    public Response getAllClientsUnauthorized() {
         return baseSpecification()
                 .get("/clients")
                 .andReturn();
@@ -45,11 +51,26 @@ public class CrudService {
 
     public Response getClient(String clientId) {
         return baseSpecification()
+                .header("X-API-KEY", accessToken)
                 .get("/client/{clientId}", clientId)
                 .andReturn();
     }
 
-    public Response addNewClient(ClientRequest clientRequest) {
+    public Response getClientUnauthorized(String clientId) {
+        return baseSpecification()
+                .get("/client/{clientId}", clientId)
+                .andReturn();
+    }
+
+    public Response addClient(ClientRequest clientRequest) {
+        return baseSpecification()
+                .header("X-API-KEY", accessToken)
+                .body(clientRequest)
+                .post("/client")
+                .andReturn();
+    }
+
+    public Response addClientUnauthorized(ClientRequest clientRequest) {
         return baseSpecification()
                 .body(clientRequest)
                 .post("/client")
@@ -58,6 +79,14 @@ public class CrudService {
 
     public Response updateClient(String clientId, ClientRequest clientRequest) {
         return baseSpecification()
+                .header("X-API-KEY", accessToken)
+                .body(clientRequest)
+                .put("/client/{clientId}", clientId)
+                .andReturn();
+    }
+
+    public Response updateClientUnauthorized(String clientId, ClientRequest clientRequest) {
+        return baseSpecification()
                 .body(clientRequest)
                 .put("/client/{clientId}", clientId)
                 .andReturn();
@@ -65,8 +94,14 @@ public class CrudService {
 
     public Response deleteClient(String clientId) {
         return baseSpecification()
+                .header("X-API-KEY", accessToken)
                 .delete("/client/{clientId}", clientId)
                 .andReturn();
     }
 
+    public Response deleteClientUnauthorized(String clientId) {
+        return baseSpecification()
+                .delete("/client/{clientId}", clientId)
+                .andReturn();
+    }
 }

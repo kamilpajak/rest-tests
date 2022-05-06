@@ -25,10 +25,10 @@ class DeleteClientTests extends BaseTest {
                 .lastName(randomAlphabetic(7))
                 .phone(randomAlphabetic(7))
                 .build();
-        var addNewClientResponse = crudSteps.addNewClient(clientRequest);
-        assumeThat(addNewClientResponse.statusCode())
+        var addClientResponse = crudSteps.addClient(clientRequest);
+        assumeThat(addClientResponse.statusCode())
                 .isEqualTo(HttpStatus.SC_OK);
-        var initialClient = addNewClientResponse.as(ClientDetails.class);
+        var initialClient = addClientResponse.as(ClientDetails.class);
 
         // When
         var deleteClientResponse = crudSteps.deleteClient(initialClient.getId());
@@ -59,5 +59,34 @@ class DeleteClientTests extends BaseTest {
                 .isEqualTo(HttpStatus.SC_NOT_FOUND);
         assertThat(returnedClientResponse.as(Message.class).getMessage())
                 .isEqualTo("client not found");
+    }
+
+    @Test
+    @DisplayName("Verify FORBIDDEN status is returned.")
+    void verifyForbiddenStatusIsReturned() {
+        // Given
+        var clientRequest = ClientRequest.builder()
+                .firstName(randomAlphabetic(7))
+                .lastName(randomAlphabetic(7))
+                .phone(randomAlphabetic(7))
+                .build();
+        var addClientResponse = crudSteps.addClient(clientRequest);
+        assumeThat(addClientResponse.statusCode())
+                .isEqualTo(HttpStatus.SC_OK);
+        var initialClient = addClientResponse.as(ClientDetails.class);
+
+        // When
+        var deleteClientResponse = crudSteps.deleteClientUnauthorized(initialClient.getId());
+        var returnedClientResponse = crudSteps.getClient(initialClient.getId());
+
+        // Then
+        assertThat(deleteClientResponse.statusCode())
+                .isEqualTo(HttpStatus.SC_FORBIDDEN);
+        assertThat(deleteClientResponse.as(Message.class).getMessage())
+                .isEqualTo("invalid or missing api key");
+        assertThat(returnedClientResponse.statusCode())
+                .isEqualTo(HttpStatus.SC_OK);
+        assertThat(returnedClientResponse.as(ClientDetails.class))
+                .isEqualTo(initialClient);
     }
 }
