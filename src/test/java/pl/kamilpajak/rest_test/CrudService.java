@@ -1,5 +1,6 @@
 package pl.kamilpajak.rest_test;
 
+import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.RestAssured;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
@@ -28,7 +29,7 @@ public class CrudService {
     static RequestSpecification baseSpecification() {
         return RestAssured.given()
                 .filters(
-//                        new AllureRestAssured(),
+                        new AllureRestAssured(),
                         new RequestLoggingFilter(),
                         new ResponseLoggingFilter())
                 .header("X-API-KEY", accessToken)
@@ -64,7 +65,7 @@ public class CrudService {
 
     public Response deleteClient(String clientId) {
         return baseSpecification()
-                .get("/client/{clientId}", clientId)
+                .delete("/client/{clientId}", clientId)
                 .andReturn();
     }
 
