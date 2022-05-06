@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import pl.kamilpajak.rest_test.CrudSteps;
 
 @ExtendWith(SoftAssertionsExtension.class)
-public class BaseTest {
+public abstract class BaseTest {
 
     @Autowired
     protected CrudSteps crudSteps;
