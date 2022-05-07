@@ -1,5 +1,6 @@
 package pl.kamilpajak.rest_test.test;
 
+import io.qameta.allure.Story;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assumptions.assumeThat;
 
 @SpringBootTest
+@Story("Getting single clients.")
 class GetClientTests extends BaseTest {
 
     @Test
@@ -80,5 +82,4 @@ class GetClientTests extends BaseTest {
         assertThat(returnedClientResponse.as(Message.class).getMessage())
                 .isEqualTo("invalid or missing api key");
     }
-
 }

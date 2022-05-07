@@ -1,5 +1,6 @@
 package pl.kamilpajak.rest_test.test;
 
+import io.qameta.allure.Story;
 import org.apache.http.HttpStatus;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Disabled;
@@ -20,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assumptions.assumeThat;
 
 @SpringBootTest
+@Story("Adding new clients.")
 class AddClientTests extends BaseTest {
 
     private static Stream<Arguments> validCustomerRequests() {
